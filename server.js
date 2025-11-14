@@ -4,8 +4,9 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 
 app.use(express.json());
-app.use(cors());
-
+app.use(cors({
+  origin: "https://ask-geepay-app.vercel.app"
+}));
 const PORT = process.env.PORT || 5000;
 
 // Email credentials
@@ -82,4 +83,5 @@ app.post("/otp", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`); // ✅ FIXED: Parentheses instead of backticks
 });
+
 
